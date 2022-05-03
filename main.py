@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, join_room
 from os import getenv
 from datetime import datetime
+import requests
 
 app = Flask(__name__)
 
@@ -32,21 +33,37 @@ def test_disconnect():
 def handle_join_room_event(data):
     app.logger.info(
         "{} has joined the room {} with {}".format(
-            data["sender_id"], data["room"], data["receiver_id"]
+            data["sender_id"], data["room_id"], data["receiver_id"]
         )
     )
-    join_room(data["room"])
+    join_room(data["room_id"])
 
 
 @socket_io.on("send_message")
-def send_message(data):
+def send_message(data, accessToken):
 
+    print(accessToken)
     app.logger.info(
         "{} has sent message to the room {}: {}".format(
-            data["sender_id"], data["room"], data["message"]
+            data["sender_id"], data["room_id"], data["message_text"]
         )
     )
-    socket_io.emit("receive_message", data, room=data["room"])
+
+    data = {
+        "room_id": data["room_id"],
+        "sender_id": data["sender_id"],
+        "message_text": data["message_text"],
+    }
+
+    headers = {"Authorization": f"Bearer {accessToken}"}
+
+    response = requests.post(
+        "http://localhost:5000/api/chat/rooms/messages", json=data, headers=headers
+    )
+
+    print(response.json())
+
+    socket_io.emit("receive_message", data, room=data["room_id"])
 
 
 if __name__ == "__main__":
