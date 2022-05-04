@@ -42,7 +42,6 @@ def handle_join_room_event(data):
 @socket_io.on("send_message")
 def send_message(data, accessToken):
 
-    print(accessToken)
     app.logger.info(
         "{} has sent message to the room {}: {}".format(
             data["sender_id"], data["room_id"], data["message_text"]
@@ -61,9 +60,7 @@ def send_message(data, accessToken):
         "http://localhost:5000/api/chat/rooms/messages", json=data, headers=headers
     )
 
-    print(response.json())
-
-    socket_io.emit("receive_message", data, room=data["room_id"])
+    socket_io.emit("receive_message", response.json(), room=data["room_id"])
 
 
 if __name__ == "__main__":
