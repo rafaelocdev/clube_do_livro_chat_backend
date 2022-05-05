@@ -8,7 +8,9 @@ charset-normalizer==2.0.12
 click==8.0.1
 colorama==0.4.4
 decorator==5.1.1
+dnspython==1.16.0
 environs==9.3.3
+eventlet==0.30.2
 executing==0.8.3
 filelock==3.6.0
 Flask==2.0.1
