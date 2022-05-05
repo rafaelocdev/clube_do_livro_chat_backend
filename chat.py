@@ -1,8 +1,10 @@
 from flask import Flask
 from flask_socketio import SocketIO, join_room
 from os import getenv
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 app.debug = True
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
