@@ -11,10 +11,10 @@ app.debug = True
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
 
 
-app.config["SQLALCHEMY_DATABASE_URI"] = getenv("SQLALCHEMY_DATABASE_URI")
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+# app.config["SQLALCHEMY_DATABASE_URI"] = getenv("SQLALCHEMY_DATABASE_URI")
+# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JSON_SORT_KEYS"] = False
-db = SQLAlchemy(app)
+# db = SQLAlchemy(app)
 
 socket_io = SocketIO(app, cors_allowed_origins="*")
 
@@ -40,7 +40,7 @@ def handle_join_room_event(data):
 
 
 @socket_io.on("send_message")
-def send_message(data, accessToken):
+def send_message(data):
 
     app.logger.info(
         "{} has sent message to the room {}: {}".format(
@@ -52,15 +52,10 @@ def send_message(data, accessToken):
         "room_id": data["room_id"],
         "sender_id": data["sender_id"],
         "message_text": data["message_text"],
+        "created_at": data["created_at"],
     }
 
-    headers = {"Authorization": f"Bearer {accessToken}"}
-
-    response = requests.post(
-        "http://localhost:5000/api/chat/rooms/messages", json=data, headers=headers
-    )
-
-    socket_io.emit("receive_message", response.json(), room=data["room_id"])
+    socket_io.emit("receive_message", data, room=data["room_id"])
 
 
 if __name__ == "__main__":
