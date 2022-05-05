@@ -1,1 +1,1 @@
-web: gunicorn chat:app --worker-class eventlet -w 1 --bind 0.0.0.0:8000 --reload
+web: uwsgi --http :5000 --gevent 1000 --http-websockets --master --wsgi-file chat.py --callable app
