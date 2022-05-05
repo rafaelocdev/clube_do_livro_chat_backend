@@ -1,20 +1,12 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from flask_socketio import SocketIO, join_room
 from os import getenv
-from datetime import datetime
-import requests
 
 app = Flask(__name__)
 
 app.debug = True
 app.config["SECRET_KEY"] = getenv("SECRET_KEY")
-
-
-# app.config["SQLALCHEMY_DATABASE_URI"] = getenv("SQLALCHEMY_DATABASE_URI")
-# app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["JSON_SORT_KEYS"] = False
-# db = SQLAlchemy(app)
 
 socket_io = SocketIO(app, cors_allowed_origins="*")
 
